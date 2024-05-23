@@ -198,66 +198,8 @@ class WorkoutScreen(MDScreen):
         self.store = store
         self.split_name = split_name
         super().__init__(**kwargs)
-        dt1 = MDDataTable(
-            size_hint=(0.9, 0.6),
-            use_pagination=True,
-            column_data=[
-                ("No.", dp(30)),
-                ("Column 1", dp(30)),
-                ("Column 2", dp(30)),
-                ("Column 3", dp(30)),
-                ("Column 4", dp(30)),
-                ("Column 5", dp(30)),
-            ],
-            row_data=[
-                (f"{i + 1}", "Cell 1", "Cell 2", "Cell 3", "Cell 4", "Cell 5") for i in range(4)
-            ],
-        )
-        dt2 = MDDataTable(
-            size_hint=(0.9, 0.6),
-            use_pagination=True,
-            column_data=[
-                ("No.", dp(30)),
-                ("Column 1", dp(30)),
-                ("Column 2", dp(30)),
-                ("Column 3", dp(30)),
-                ("Column 4", dp(30)),
-                ("Column 5", dp(30)),
-            ],
-            row_data=[
-                (f"{i + 1}", "Cell 1", "Cell 2", "Cell 3", "Cell 4", "Cell 5") for i in range(4)
-            ],
-        )
 
-        scroll = ScrollView(scroll_type=["bars", "content"])
-        l1 = MDLabel(text="hello")
-        l2 = MDLabel(text="world")
-
-        list = MDList()
-        b1 = BaseListItem()
-        b2 = BaseListItem()
-
-        card1 = MDCard()
-        card1.add_widget(dt1)
-        card2 = MDCard()
-        card2.add_widget(dt2)
-
-        b1.add_widget(card1)
-        b2.add_widget(card2)
-
-        list.add_widget(b1)
-        list.add_widget(b2)
-        '''
-        wdt = 20
-        box1 = MDBoxLayout(orientation="vertical",size_hint_y=1.5)
-        box1.bind(minimum_height=box1.setter("height"))
-        scroll.add_widget(box1)
-        '''
-
-
-        scroll.add_widget(list)
-
-        self.add_widget(scroll)
+        self.draw()
         #self.draw()
 
 
