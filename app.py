@@ -13,6 +13,8 @@ from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import ScreenManager,Screen
 from utils import WorkoutScreen,SplitsScreen
+from kivymd.uix.navigationdrawer import MDNavigationDrawer
+from kivy.uix.image import Image
 
 class DemoApp(MDApp):
 
@@ -162,9 +164,14 @@ class DemoApp(MDApp):
         popup.open()
 
     def prepare_main_screen(self):
+
+        self.navigation_drawer = MDNavigationDrawer(radius=[0, 0, 0, 0])
+        self.prepare_navigation_drawer()
+
         self.box = MDBoxLayout(orientation="vertical")
 
         self.toolbar = MDTopAppBar(title="Workout Manager", pos_hint={'top': 1})
+        self.toolbar.left_action_items = [["menu",lambda x: self.navigation_drawer.set_state("open") ]]
 
         self.bottom_menu = MDTopAppBar(title="add workout", pos_hint={'bottom': 1}, elevation=0)
         self.bottom_menu.right_action_items = [["plus", self.show_add_workout_dialog]]
@@ -182,3 +189,43 @@ class DemoApp(MDApp):
         self.initialise_wo_list()
         self.box.add_widget(self.bottom_menu)
 
+        self.screen.add_widget(self.navigation_drawer)
+
+    def prepare_navigation_drawer(self):
+
+        main = MDBoxLayout(orientation="vertical",spacing = "8dp")
+        scroll_pane = ScrollView()
+        list = MDList()
+        gif = Image(
+            source= "assets\\kitten2.gif",
+            allow_stretch= True
+        )
+
+
+        list.add_widget(
+            OneLineIconListItem(
+                text= "Weight tracker",
+                on_release = lambda obj: self.weigh_tracker_screen(obj)
+            )
+
+        )
+        list.add_widget(
+            OneLineIconListItem(
+                text="Chatbot",
+                on_release=lambda obj: self.chatbot_screen(obj)
+            )
+
+        )
+        scroll_pane.add_widget(list)
+        main.add_widget(gif)
+        gif.center = gif.parent.center
+        main.add_widget(scroll_pane)
+        self.navigation_drawer.add_widget(main)
+
+    def chatbot_screen(self,obj):
+        print(obj)
+        pass
+
+    def weigh_tracker_screen(self,obj):
+        print(obj)
+        pass

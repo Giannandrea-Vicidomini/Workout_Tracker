@@ -1,1 +1,1 @@
-{"workouts": {"ppl": {"pull": {}, "legs": {}, "push": {"machine fly": {}, "barbell incline bench": {}, "chest press": {}}}}}
+{"workouts": {"ppl": {"pull": {}, "legs": {"leg press": [["8", "140"], ["6", "160"]]}, "push": {"machine fly": [["5", "10"], ["5", "11"]], "chest press": [["6", "23"], ["6", "32"], ["8", "55"]]}}}}

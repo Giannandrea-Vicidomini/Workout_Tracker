@@ -17,6 +17,7 @@ from kivy.uix.label import Label
 from kivymd.uix.datatables import MDDataTable
 from kivy.metrics import dp
 
+
 class SplitsScreen(MDScreen):
 
     def __init__(self,manager,store,splitName:str,**kwargs):
@@ -324,7 +325,8 @@ class WorkoutScreen(MDScreen):
 
     def change_screen(self, exercise):
         exercise = exercise()
-        self.split_Screen = ExerciseScreen(self.screen_manager, self.store, exercise, name=exercise)
+        path=["workouts",self.split_name,self.name,exercise]
+        self.split_Screen = ExerciseScreen(self.screen_manager, self.store, exercise,path, name=exercise)
         self.screen_manager.add_widget(self.split_Screen)
         self.screen_manager.transition.direction = 'left'
         # self.screen_manager.switch_to(self.split_Screen,duration=0.15)
@@ -373,11 +375,12 @@ class WorkoutScreen(MDScreen):
 
 class ExerciseScreen(MDScreen):
 
-    def __init__(self, manager, store,exercise_name: str, **kwargs):
+    def __init__(self, manager, store,exercise_name: str,path, **kwargs):
         self.screen_manager = manager
         self.store = store
         self.exercise_name = exercise_name
         self.exercise_obj = None
+        self.path = path
         super().__init__(**kwargs)
 
         self.draw()
@@ -392,8 +395,8 @@ class ExerciseScreen(MDScreen):
         self.toolbar = MDTopAppBar(title=f"Exercise - {self.name}", pos_hint={'top': 1})
         self.toolbar.left_action_items = [["arrow-left", self.previous_screen]]
 
-        self.bottom_menu = MDTopAppBar(title="", pos_hint={'bottom': 1}, elevation=0)
-        #self.bottom_menu.right_action_items = [["plus", self.show_add_exercise_dialog]]
+        self.bottom_menu = MDTopAppBar(title="Save exercise data", pos_hint={'bottom': 1}, elevation=0)
+        self.bottom_menu.right_action_items = [["content-save-check", self.save_exercise_data]]
 
         self.scroll_view = ScrollView()
         self.list = MDList()
@@ -402,14 +405,45 @@ class ExerciseScreen(MDScreen):
         self.add_widget(self.box)
         self.box.add_widget(self.toolbar)
 
-        self.exercise_obj = Exercise(self.name,3,12)
+        self.exercise_obj = Exercise(self.name,self.store,self.path.copy())
         self.box.add_widget(self.exercise_obj.get_exercise())
         #self.initialise_workout_day_list()
 
         self.box.add_widget(self.bottom_menu)
 
     def previous_screen(self,obj):
-        print(obj)
+
         self.screen_manager.transition.direction = 'right'
         self.screen_manager.current = self.screen_manager.previous()
         self.screen_manager.remove_widget(self)
+
+    def save_exercise_data(self,obj):
+
+        try:
+            #self.store["workouts"]["ppl"]["push"][self.name]
+            sets = self.exercise_obj.get_sets_list()
+            self.store[self.path[0]][self.path[1]][self.path[2]][self.path[3]] = sets
+        except Exception as e:
+            self.show_popup(
+                title="Error",
+                message=f"Could not save exercise data:{e}"
+            )
+            return
+
+        self.show_popup(
+                title="Data saved successfully",
+                message="the reps and weight of this exercises have been updated successfully"
+        )
+
+
+    def show_popup(self, title,message):
+        label = MDLabel(text=message,
+                        halign="center",  # Horizontal alignment
+                        valign="middle",  # Vertical alignment
+                        theme_text_color="Custom",
+                        text_color=(1, 1,1, 1))
+
+        popup = Popup(title=title, content=label, size_hint=(0.8, 0.3))
+
+        popup.open()
+
